@@ -1,0 +1,22 @@
+# Secrets - never commit
+config/secrets.yaml
+.env
+*.env
+
+# Runtime data (全量数据 data/research.db 与 data/intel_full.csv 纳入版本库维护)
+data/*
+!data/research.db
+!data/intel_full.csv
+*.db-shm
+*.db-wal
+*.bak_*
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.png
+!docs/*.png
+
+# Generated viewer (regenerate with scripts/export_viewer.py)
+viewer/

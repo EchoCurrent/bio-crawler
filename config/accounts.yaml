@@ -1,0 +1,96 @@
+# 核心公众号 (必须监控)
+core_accounts:
+  - name: "三联生活周刊"
+    wechat_id: "lifeweek"
+    enabled: true
+  - name: "南方周末"
+    wechat_id: "infzm"
+    enabled: true
+  - name: "第一财经"
+    wechat_id: "cbn-yicai"
+    enabled: true
+  - name: "财新网"
+    wechat_id: "caixinwang"
+    enabled: true
+
+# 相关公众号 (可能关注)
+related_accounts:
+  - name: "虎嗅"
+    wechat_id: "huxiu_com"
+    enabled: true
+  - name: "36氪"
+    wechat_id: "wow36kr"
+    enabled: true
+  - name: "钛媒体"
+    wechat_id: "taimeiti"
+    enabled: true
+  - name: "晚点LatePost"
+    wechat_id: "postlate"
+    enabled: true
+  - name: "刺猬公社"
+    wechat_id: "ciweigongshe"
+    enabled: true
+  - name: "传媒内参"
+    wechat_id: "cmnc01"
+    enabled: true
+  - name: "广电独家"
+    wechat_id: "guangdiandujia"
+    enabled: true
+  - name: "收视中国"
+    wechat_id: "shoushizhongguo"
+    enabled: true
+  - name: "主编温静"
+    wechat_id: "zhubianwenjing"
+    enabled: true
+  - name: "广电时评"
+    wechat_id: "guangdianshiping"
+    enabled: true
+
+# 采集设置
+crawler:
+  max_articles_per_account: 10      # 每个号最多采集最近几篇
+  request_delay: 3                  # 请求间隔(秒)
+  headless: true                    # 无头浏览器
+  max_retries: 3                    # 失败重试次数
+
+# AI摘要
+summarizer:
+  enabled: true
+  api_key: "your-kimi-api-key-here"  # 替换为你的Kimi API Key
+  model: "kimi-k3"
+  max_content_length: 8000          # 发送给AI的最大字符数
+  api_base: "https://api.moonshot.cn/v1"  # Kimi API地址
+
+# 通知
+notifier:
+  # 控制台输出 (默认，建议开启)
+  console:
+    enabled: true
+
+  # 邮件推送 (可选)
+  email:
+    enabled: false
+    smtp_host: "smtp.gmail.com"
+    smtp_port: 587
+    username: "your-email@gmail.com"
+    password: "your-app-password"    # Gmail需要使用应用专用密码
+    to: ["you@example.com"]
+    subject_prefix: "[公众号更新]"
+
+  # 企业微信机器人 (可选)
+  wecom:
+    enabled: false
+    webhook_url: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=your-key-here"
+
+# 存储
+storage:
+  db_path: "data/wechat.db"
+  image_dir: "data/images"
+  keep_images: true                 # 是否下载图片
+  image_subdir_by_account: true     # 按公众号分文件夹存储图片
+
+# 定时任务
+scheduler:
+  enabled: false                    # 是否启用内置定时任务
+  run_time: "09:00"                 # 每天运行时间 (HH:MM)
+  timezone: "Asia/Shanghai"

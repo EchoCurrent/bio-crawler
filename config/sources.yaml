@@ -1,0 +1,132 @@
+# 科研情报监控系统配置
+# 2026-11-23: 领域收拢为单一「生物医学」类目, 采集由 AI agent 驱动 (见 docs/agent_collection.md)
+
+# 监控源 - 微信公众号 (线索源, agent 采集时参考)
+wechat_accounts:
+  - name: "BioArt生物艺术"
+    keywords: ["BioArt", "生物医学", "基因治疗", "细胞疗法", "神经科学"]
+    category: "生物医学"
+    enabled: true
+    search_queries: ["BioArt", "BioArt生物艺术"]
+  - name: "衰老与抗衰老"
+    keywords: ["aging", "衰老", "抗衰老", "longevity", "NAD+", "sirtuin"]
+    category: "生物医学"
+    enabled: true
+    search_queries: ["衰老研究", "抗衰老突破", "aging research"]
+  - name: "生物谷"
+    keywords: ["生物谷", "生物医药", "创新药", "临床试验", "药企"]
+    category: "生物医学"
+    enabled: true
+    search_queries: ["生物谷", "生物医药资讯"]
+  - name: "转化医学网"
+    keywords: ["转化医学", "精准医疗", "伴随诊断", "biomarker"]
+    category: "生物医学"
+    enabled: true
+    search_queries: ["转化医学", "精准医疗"]
+
+# 监控源 - 网站
+websites:
+  - name: "CK Biobank"
+    url: "https://www.ckbiobank.org/"
+    rss: null
+    keywords: ["biobank", "cohort", "队列研究"]
+    category: "生物医学"
+    enabled: true
+
+  - name: "BioArt官网"
+    url: "https://www.bioart.org.cn/"
+    rss: "https://www.bioart.org.cn/feed"
+    keywords: ["BioArt", "生物医学"]
+    category: "生物医学"
+    enabled: true
+
+# 通用搜索关键词 (agent 扩展时的种子词)
+search_keywords:
+  - "BioArt 最新研究进展"
+  - "衰老 抗衰老 突破"
+  - "基因治疗 breakthrough"
+  - "biobank cohort study"
+  - "细胞疗法 CAR-T"
+  - "创新药 临床试验 获批"
+
+# 领域分类: 单一类目
+categories:
+  生物医学:
+    keywords: ["基因", "细胞", "蛋白", "药物", "临床试验", "靶向", "衰老", "长寿", "抗衰老",
+               "创新药", "生物制剂", "疫苗", "抗体", "ADC", "biobank", "cohort", "队列",
+               "转化医学", "精准医疗", "biomarker", "基因治疗", "细胞疗法", "神经科学"]
+    subcategories: ["衰老研究", "基因与细胞治疗", "新药研发", "生物样本库与队列", "转化与精准医学", "产业与政策动态"]
+
+# 研究配置
+research:
+  mode: "agent"               # agent = 子agent驱动采集 (v2.1); script = 旧固定脚本
+  time_window: "7d"           # 日常运行 = 近 7 天; 首轮广度 wave 用 "all"
+  max_depth: 2
+  max_results: 10
+  verify: true
+  summarize: true
+  verify_sample_size: 50
+  summarize_sample_size: 20
+
+# 输出配置
+output:
+  format: "csv"             # csv / excel / both
+  path: "output"
+  by_category: true
+  include_raw_data: true
+
+# AI配置
+summarizer:
+  enabled: true
+  api_key: "your-kimi-api-key-here"  # 替换为实际的Kimi API Key
+  model: "kimi-k3"
+  max_content_length: 8000
+
+# Claude API配置 (用于高质量验证和摘要)
+claude:
+  enabled: false  # 设置为true启用Claude
+  api_key: "your-claude-api-key-here"
+  model: "claude-opus-5-5"
+  max_tokens: 16000
+  effort: "high"
+
+# 飞书通知配置 (真实密钥在本地 config/secrets.yaml, 不入库)
+feishu:
+  webhook:
+    enabled: false
+    url: "https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxx"
+    secret: null
+
+  app:
+    enabled: true
+    app_id: "cli_xxxxxx"  # 本地覆盖: config/secrets.yaml
+    app_secret: "xxxxxx"  # 本地覆盖: config/secrets.yaml
+    chat_id: "oc_xxxxxx"  # 本地覆盖: config/secrets.yaml
+
+# 定时推送配置
+schedule:
+  enabled: true
+  cron: "0 0 * * *"         # 每天 0 点 (Asia/Shanghai)
+  timezone: "Asia/Shanghai"
+
+# 爬虫配置 (旧脚本模式用, agent 模式下忽略)
+crawler:
+  headless: true
+  request_delay: 3
+  max_retries: 3
+
+# 存储配置
+storage:
+  db_path: "data/research.db"
+  image_dir: "data/images"
+
+# agent 采集配置
+agent_collection:
+  wave_dir: "data/collection"   # 每轮采集的 JSONL 存放目录
+  subtopics:                  # 子 agent 分工 (首轮广度)
+    - "衰老与长寿研究 (aging, longevity, 抗衰老机制与药物)"
+    - "基因与细胞治疗 (基因治疗, 细胞疗法 CAR-T, 基因编辑)"
+    - "新药研发与临床试验 (创新药, ADC, 抗体, 获批进展)"
+    - "生物样本库与队列研究 (biobank, cohort, 大队列, 数据共享)"
+    - "转化与精准医学 (转化医学, 伴随诊断, biomarker)"
+    - "生物医学产业与政策 (药企动态, 投融资, FDA/NMPA 审批)"
