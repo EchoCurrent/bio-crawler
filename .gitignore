@@ -18,5 +18,6 @@ __pycache__/
 *.png
 !docs/*.png
 
-# Generated viewer (regenerate with scripts/export_viewer.py)
-viewer/
+# Track the standalone HTML viewer (regenerate with scripts/export_viewer.py)
+viewer/*
+!viewer/index.html
